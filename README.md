@@ -1,6 +1,6 @@
 # Debezium with SQL on Linux
 
-# Quickstart
+## Quickstart
 
 > [Reference](https://github.com/debezium/debezium-examples/tree/main/tutorial#using-sql-server)
 ```bash
