@@ -2,18 +2,31 @@
 
 ## Quickstart
 
+To get a working SQL Server + Debezium + Kafdrop setup:
+```bash
+export DEBEZIUM_VERSION=1.9
+docker-compose -f 0.docker-compose-sqlserver.yaml down
+docker-compose -f 0.docker-compose-sqlserver.yaml up -d
+
+# Initiate SQL Server with CDC tables
+cat 1.db-init.sql | docker-compose -f 0.docker-compose-sqlserver.yaml exec -T sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
+
+# Turn on Debezium for CDC ingestion
+curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://connect:8083/connectors/ -d @2.register-sqlserver.json
+```
+## Useful links from laptop
+* SQL: localhost,31433
+   * sa:Password!
+* Kafdrop: localhost:19000
+* Kafka:   kafka:9092
+
+## Longer explanations
 > [Reference](https://github.com/debezium/debezium-examples/tree/main/tutorial#using-sql-server)
 ```bash
 # Infra spinup - 5 Containers
 # Kafka, Zookeeper, Kafdrop, SQL, Debezium
 export DEBEZIUM_VERSION=1.9
 docker-compose -f 0.docker-compose-sqlserver.yaml up -d
-
-# Useful links from laptop
-# SQL:     localhost,31433
-#   sa:Password!
-# Kafdrop: localhost:19000
-# Kafka:   localhost:9092
 
 # Initialize database and insert test data, enable CDC
 cat 1.db-init.sql | docker-compose -f 0.docker-compose-sqlserver.yaml exec -T sqlserver bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD'
